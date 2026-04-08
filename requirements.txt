@@ -1,0 +1,24 @@
+# Core dependencies for KAMP Assembly Data Catalog
+
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Optional but recommended for better UX and future extensions
+tqdm>=4.65.0          # progress bars (useful for large datasets)
+pathlib               # already in stdlib, but listed for clarity
+
+# For future analysis notebooks and visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+openai>=1.0.0
+
+# For potential video / 3D handling (comment out if not needed yet)
+# opencv-python>=4.8.0
+# pillow>=10.0.0
+# open3d>=0.18.0        # for point clouds / meshes (NIST MOAD, Assemble Them All)
+
+# For LLM-based knowledge gap analysis (optional)
+# openai>=1.0.0
+
+# Development / testing
+pytest>=7.4.0
