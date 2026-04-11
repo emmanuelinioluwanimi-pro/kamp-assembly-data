@@ -1,13 +1,11 @@
 """
-KAMP Assembly Data Loaders
-Central entry point for all assembly datasets.
+KAMP Assembly Data Loaders - Minimal Metadata Version
 """
 
 import pandas as pd
 from pathlib import Path
 from typing import Dict, Any
 
-# Lazy loader to avoid import issues
 def _get_loader(name: str):
     if name == "Aero Fastener":
         from .aero_fastener import load_aero_fastener
@@ -41,7 +39,7 @@ def _get_loader(name: str):
 
 
 def load_dataset(name: str, data_root: str = "./data") -> Dict[str, Any]:
-    """Main function to load any dataset."""
+    """Return only metadata + download link. No data loading or folder checks."""
     catalog_path = Path("catalog.csv")
     if not catalog_path.exists():
         raise FileNotFoundError("catalog.csv not found in project root.")
@@ -55,51 +53,40 @@ def load_dataset(name: str, data_root: str = "./data") -> Dict[str, Any]:
 
     try:
         loader_func = _get_loader(name)
+        data = loader_func(data_root)
     except Exception as e:
-        raise NotImplementedError(f"Loader for '{name}' failed to load: {e}")
-
-    from .utils import get_dataset_dir
-    dataset_dir = get_dataset_dir(data_root, name)
-
-    try:
-        data = loader_func(data_root=str(dataset_dir))
-
-        # Add catalog metadata
-        data["dataset_name"] = name
-        data.setdefault("description", row.get("assembly_task", ""))
-
-        if "metadata" not in data:
-            data["metadata"] = {}
-
-        data["metadata"].update({
-            "source": row.get("source"),
-            "data_type": row.get("data_type"),
-            "size": row.get("size"),
-            "license": row.get("license"),
+        print(f"Warning: Loader for '{name}' failed: {e}")
+        data = {
+            "dataset_name": name,
+            "description": row.get("assembly_task", ""),
+            "metadata": {},
             "download_link": row.get("download_link"),
-            "knowledge_type": row.get("knowledge_type"),
-        })
+            "note": "Error loading loader."
+        }
 
-        print(f"✅ Successfully loaded '{name}' with {len(data.get('samples', []))} samples.")
-        return data
+    # Force the exact keys you want
+    data["dataset_name"] = name
+    data.setdefault("description", row.get("assembly_task", ""))
+    data.setdefault("metadata", {})
+    data["metadata"].update({
+        "size": row.get("size"),
+        "data_type": row.get("data_type"),
+        "license": row.get("license"),
+        "knowledge_type": row.get("knowledge_type"),
+    })
+    data["download_link"] = row.get("download_link")
+    data.setdefault("note", "Download the dataset from the link above to use real samples.")
 
-    except Exception as e:
-        print(f"\n⚠️  Error loading '{name}': {e}")
-        print(f"📥 Download link: {row.get('download_link', 'N/A')}")
-        print(f"   Expected folder: {dataset_dir}\n")
-        raise
+    return data
 
 
 def list_available_datasets() -> None:
-    """Print summary of all datasets."""
+    """Print simple list of all datasets."""
     catalog = pd.read_csv("catalog.csv")
-    print("📋 Available Assembly Datasets:\n")
+    print("Available datasets:")
     for _, row in catalog.iterrows():
         print(f"• {row['name']}")
-        print(f"  Task : {row['assembly_task'][:85]}...")
-        print(f"  Size : {row['size']}")
-        print(f"  Type : {row['data_type'][:70]}...")
-        print("-" * 70)
+    print()
 
 
 __all__ = ["load_dataset", "list_available_datasets"]
