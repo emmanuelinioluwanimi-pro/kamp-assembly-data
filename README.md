@@ -87,17 +87,23 @@ print(data["metadata"])
 ## How It Works
 
 ```mermaid
-flowchart LR
-    A[Visit Repository] --> B[Browse Catalog]
-    B --> C[Run test_loaders.py]
-    C --> D[Enter Dataset Name]
-    D --> E[Get Metadata + Download Link]
-    E --> F[Download Dataset]
-    F --> G[Place in data/ folder]
-    G --> H[Use in Notebooks / Analysis]
+flowchart TD
+    A[Visit Repository] 
+    --> B[Browse catalog.csv]
+    --> C[Clone the repo]
+    --> D[Run test_loaders.py]
+    --> E[Enter Dataset Name]
+    --> F[Get Metadata + Download Link]
+    --> G[Download Dataset]
+    --> H[Place in data/ folder]
+    --> I[Use in Notebooks / Analysis]
 
-    style A fill:#115d33,stroke:#1976d2
-    style H fill:#4c0507,stroke:#388e3c
+    classDef start fill:#e3f2fd,stroke:#1976d2,stroke-width:3px,color:#000000,rx:12,ry:12
+    classDef final fill:#e8f5e9,stroke:#2e7d32,stroke-width:3px,color:#000000,rx:12,ry:12
+    classDef default fill:#f8f9fa,stroke:#555555,stroke-width:2px,color:#000000,rx:10,ry:10
+
+    class A start
+    class H final
 ```
 
 ## Quick Start
