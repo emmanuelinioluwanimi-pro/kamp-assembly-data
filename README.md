@@ -25,6 +25,42 @@ AI models are typically trained on internet data, not factory-style assembly dat
 | **MECCANO**        | 90.619 GB    | Egocentric RGB+depth, gaze                          | Toy motorbike assembly                           | 20 participants building a toy motorbike with gaze-guided action anticipation. |
 | **NIST MOAD**      | Not specified| RGB images, point clouds, CAD models                | Part geometry & mating                           | Objects and assemblies for NIST Assembly Task Boards 1–4. |
 
+## Dataset Modalities Overview
+
+```mermaid
+flowchart TD
+    subgraph Video["Video & Egocentric"]
+        A[HA-ViD<br>226 GB] 
+        B[IKEA ASM<br>421 GB]
+        C[MECCANO<br>91 GB]
+        D[IndustReal<br>72 GB]
+    end
+
+    subgraph Sensor["Force & Sensor Data"]
+        E[Aero Fastener<br>86 MB]
+        F[REASSEMBLE<br>55 GB]
+    end
+
+    subgraph Mesh["3D Meshes & CAD"]
+        G[Assemble Them All<br>1 GB]
+        H[NIST MOAD]
+    end
+
+    subgraph Multi["Rich Multi-Modal"]
+        I[HA4M<br>2.92 TB]
+    end
+
+    classDef video fill:#e3f2fd,stroke:#1976d2,color:#000000
+    classDef sensor fill:#f3e5f5,stroke:#7b1fa2,color:#000000
+    classDef mesh fill:#e8f5e9,stroke:#388e3c,color:#000000
+    classDef multi fill:#fff3e0,stroke:#f57c00,color:#000000
+
+    class A,B,C,D video
+    class E,F sensor
+    class G,H mesh
+    class I multi
+```
+
 ## How to Use the Loaders
 
 The loaders are designed to be **simple and reliable** — they take in the name of the dataset you plan to download as input and return metadata and download links for that dataset.
@@ -46,6 +82,22 @@ print(data["note"])
 
 # View detailed metadata
 print(data["metadata"])
+```
+
+## How It Works
+
+```mermaid
+flowchart LR
+    A[Visit Repository] --> B[Browse Catalog]
+    B --> C[Run test_loaders.py]
+    C --> D[Enter Dataset Name]
+    D --> E[Get Metadata + Download Link]
+    E --> F[Download Dataset]
+    F --> G[Place in data/ folder]
+    G --> H[Use in Notebooks / Analysis]
+
+    style A fill:#115d33,stroke:#1976d2
+    style H fill:#4c0507,stroke:#388e3c
 ```
 
 ## Quick Start
